@@ -1,0 +1,73 @@
+import math
+import random
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+
+# Set up initial parameters
+n_rabbits = 10
+m_dogs = 5
+v1 =2
+v2 = 1
+radius = 1
+
+# Initialize positions and velocities of rabbits and dogs
+rabbits_pos = np.zeros((n_rabbits, 2))
+rabbits_vel = np.zeros((n_rabbits, 2))
+dogs_pos = np.zeros((m_dogs, 2))
+dogs_vel = np.zeros((m_dogs, 2))
+for i in range(n_rabbits):
+    rabbits_vel[i] = v1 * np.random.randn(2)
+for i in range(m_dogs):
+    theta = 2 * math.pi * i / m_dogs
+    dogs_pos[i] = radius * np.array([math.cos(theta), math.sin(theta)])
+    dogs_vel[i] = v2 * np.random.randn(2)
+
+# Initialize plot and scatter points for rabbits and dogs
+fig, ax = plt.subplots()
+rabbits_scatter = ax.scatter(rabbits_pos[:, 0], rabbits_pos[:, 1], marker='o', color='blue')
+dogs_scatter = ax.scatter(dogs_pos[:, 0], dogs_pos[:, 1], marker='*', color='red')
+
+# Define the main simulation function
+def update(frame):
+    # Update positions of rabbits and dogs based on their velocities
+    rabbits_pos += rabbits_vel
+    dogs_pos += dogs_vel
+    
+    # Check for capturing rabbits
+    for i in range(m_dogs):
+        dists = np.linalg.norm(rabbits_pos - dogs_pos[i], axis=1)
+        min_dist = np.min(dists)
+        if min_dist < 0.1:
+            captured_rabbit = np.argmin(dists)
+            rabbits_pos[captured_rabbit] = np.array([100, 100])  # Move the captured rabbit out of the field
+            rabbits_vel[captured_rabbit] = np.zeros(2)
+            dogs_vel[i] = np.zeros(2)
+    
+    # Update velocities of rabbits based on the nearest dog
+    for i in range(n_rabbits):
+        dists = np.linalg.norm(dogs_pos - rabbits_pos[i], axis=1)
+        nearest_dog = np.argmin(dists)
+        direction = rabbits_pos[i] - dogs_pos[nearest_dog]
+        rabbits_vel[i] = v1 * direction / np.linalg.norm(direction)
+    
+    # Update velocities of dogs based on the nearest rabbit
+    for i in range(m_dogs):
+        dists = np.linalg.norm(rabbits_pos - dogs_pos[i], axis=1)
+        nearest_rabbit = np.argmin(dists)
+        direction = rabbits_pos[nearest_rabbit] - dogs_pos[i]
+        dogs_vel[i] = v2 * direction / np.linalg.norm(direction)
+    
+    # Update scatter points on the plot
+    rabbits_scatter.set_offsets(rabbits_pos)
+    dogs_scatter.set_offsets(dogs_pos)
+    
+    # Check if all rabbits are captured
+    if np.all(rabbits_pos[:, 0] > 50):
+        plt.close()
+    
+    return rabbits_scatter, dogs_scatter
+
+# Run the animation
+ani = FuncAnimation(fig, update, frames=200, interval=50, blit=True)
+plt.show()

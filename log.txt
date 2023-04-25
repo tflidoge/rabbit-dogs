@@ -1,0 +1,20 @@
+write a python code for n rabbits which have Brownian motion in 2d space and add m dogs to try to catch them, every dog has the same spped v, and every dog choose the nearest 
+rabbit to catch. The initial place of these rabbits are at origin while dogs are lay equally on a circle, if a rabbit is captured, then the dog that 
+catch it turn to catch another one. Plot the motion animately, thg game can not ends until all rabbits are captured.
+
+
+
+write a python code for n rabbits which moves in 2d space with speed v1 and add m dogs to try to catch them, every dog has the same spped v2, and every dog choose the nearest 
+rabbit to catch and every rabbit choose the odd direction to the nearest dog to escape. The initial place of these rabbits are at origin while dogs are lay equally on a circle, if a rabbit is captured, then the dog that 
+catch it turns to catch another one. Plot the motion animately, thg game can not ends until all rabbits are captured.
+
+
+
+Suppose there are m particles of A kind and n particles of B kind. 
+Now we have two 3D arraies A and B to describe them, i.e., 
+the first index i of A[i,x,y] is the number label of A particles. For each B particle labelled j, 
+I want to find the A particle label with the nearest length to j-th B particle. Write code with julia.
+
+
+Suppose we have one Bool array with length n, we want to get 
+the label array whose Bool is true, what can i do in julia
